@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BTRC</string>
+    <string name="action_settings">Connect...</string>
+    <string name="button_connect">Connect</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="title_devices">Devices</string>
+    <string name="scan">Scan</string>
+    <string name="stopScan">Stop Scanning</string>
+</resources>
