@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
         for (BluetoothDevice bondedDevice : bondedDevices) {
             items.add(new DeviceItem(bondedDevice.getName(), bondedDevice.getAddress()));
         }
-        ToggleButton scanBtn = (ToggleButton) findViewById(R.id.scanButton);
+        final ToggleButton scanBtn = (ToggleButton) findViewById(R.id.scanButton);
         scanBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -85,10 +86,17 @@ public class SettingsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d("DEVICELIST", "Selected item " + item.getName());
-                                ba.cancelDiscovery();
-                                SettingsActivity.this.unregisterReceiver(receiver);
-                                SettingsActivity.this.setResult(RESULT_OK);
-                                SettingsActivity.this.finish();
+                                scanBtn.setChecked(false);
+                                try {
+                                    DeviceService.getINSTANCE().connectTo(item.getAddress());
+                                    SettingsActivity.this.setResult(RESULT_OK);
+                                    SettingsActivity.this.finish();
+                                } catch (IOException e) {
+                                    Toast.makeText(SettingsActivity.this, "Can't connect", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Log.e(DeviceService.LOG_TAG, "Can't connect", e);
+                                }
+
                             }
                         })
                         .show();
