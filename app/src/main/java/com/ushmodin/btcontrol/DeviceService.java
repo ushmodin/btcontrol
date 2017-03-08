@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +18,7 @@ import java.util.concurrent.Executors;
 
 public class DeviceService {
     private final static BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-    private final static UUID DEFAULT_UUID = UUID.randomUUID();
+    private final static UUID DEFAULT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static DeviceService INSTANCE = new DeviceService();
     public static final String LOG_TAG = "BLUETOOTH";
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -44,8 +45,9 @@ public class DeviceService {
                 @Override
                 public void run() {
                     try {
+                        Log.d(LOG_TAG, "Sending " + Arrays.toString(data));
                         bluetoothSocket.getOutputStream().write(data);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Log.e(LOG_TAG, "Can't write", e);
                     }
                 }

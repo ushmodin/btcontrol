@@ -1,5 +1,6 @@
 package com.ushmodin.btcontrol;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -28,8 +30,8 @@ public class ControlActivity extends AppCompatActivity {
 
         @Override
         protected void onDraw(Canvas canvas) {
-            int height = canvas.getHeight();
-            int width = canvas.getWidth();
+            int height = getHeight();
+            int width = getWidth();
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             paint.setColor(Color.GRAY);
             paint.setStrokeWidth(2);
@@ -49,6 +51,14 @@ public class ControlActivity extends AppCompatActivity {
         public boolean onTouchEvent(MotionEvent event) {
             float x = event.getX();
             float y = event.getY();
+            int centerX = getWidth() / 2;
+            int centerY = getHeight() / 2;
+            float driveX = (x - centerX) / centerX;
+            float driveY = (centerY - y) / centerY;
+            ControlService.drive(driveX, driveY);
+//            Log.d("CURSOR", "X = " + x + " Y = " + y);
+//            Log.d("CURSOR", "centerX = " + centerX + " centerY = " + centerY);
+//            Log.d("CURSOR", "driveX = " + driveX + " driveY = " + driveY);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     point = new Point();
@@ -61,6 +71,7 @@ public class ControlActivity extends AppCompatActivity {
                     break;
                 case MotionEvent.ACTION_UP:
                     point = null;
+                    ControlService.stop();
                     invalidate();
                     break;
             }
